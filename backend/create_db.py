@@ -1,7 +1,7 @@
 import pandas as pd
 import sqlite3
 
-data = pd.read_csv("database/food.csv", delimiter=";")
+data = pd.read_csv("src/csvs/food.csv", delimiter=";")
 
 for i in range(2, len(data.columns)):
     for j in range(len(data)):
@@ -29,25 +29,34 @@ cur.execute(
     )
     """
 )
-
-for _, row in data.iterrows():
-    cur.execute(
-        """
-        INSERT INTO food (dish_name, weight, protein, fat, carbohydrates, kbzu)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """,
-        (row["Блюдо"], row["Выход (гр)"], row["Белки (г)"], row["Жиры (г)"], row["Углеводы (г)"], row["Ккал"])
-    )
-
 connection.commit()
 connection.close()
+
+
+def add_food():
+    conn = 0
+    for _, row in data.iterrows():
+        conn = sqlite3.connect("database/food.db")
+        curr = conn.cursor()
+
+        curr.execute(
+            """
+            INSERT OR IGNORE INTO food (dish_name, weight, protein, fat, carbohydrates, kbzu)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (row["Блюдо"], row["Выход (гр)"], row["Белки (г)"], row["Жиры (г)"], row["Углеводы (г)"], row["Ккал"])
+        )
+
+    conn.commit()
+    conn.close()
+
 
 connection = sqlite3.connect("database/users.db")
 cur = connection.cursor()
 
 cur.execute(
     """
-    CREATE TABLE IF NOT EXISTS Users (
+    CREATE TABLE IF NOT EXISTS users (
         tg_id TEXT PRIMARY KEY,
         sex TEXT NOT NULL,
         name TEXT NOT NULL,
@@ -55,6 +64,24 @@ cur.execute(
         weight INTEGER NOT NULL,
         age INTEGER NOT NULL,
         diabetes BOOLEAN NOT NULL
+    )
+    """
+)
+
+connection.commit()
+connection.close()
+
+connection = sqlite3.connect("database/basket.db")
+cur = connection.cursor()
+
+cur.execute(
+    """
+    CREATE TABLE IF NOT EXISTS basket (
+        id INTEGER PRIMARY KEY,
+        user_id TEXT NOT NULL, 
+        product_id INTEGER NOT NULL,
+        count INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(tg_id) ON DELETE CASCADE
     )
     """
 )
