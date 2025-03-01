@@ -1,4 +1,5 @@
 import flet as ft
+import requests
 
 dark_green = "#2B7834"
 orange = "#EC7A2E"
@@ -7,7 +8,7 @@ white = "#FFFFFF"
 
 
 def main(page: ft.Page):
-    page.title = "Школьная еда"
+    page.title = "Школьная еда | Регистрация"
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.START
     page.bgcolor = light_green
@@ -87,7 +88,41 @@ def main(page: ft.Page):
         update_diabetes_style("Нет")
 
     def register_clicked(e):
-        ...
+        data = {
+            "tg_id": "1234567890",
+            "sex": selected_gender.current,
+            "height": height_field.value,
+            "weight": weight_field.value,
+            "age": age_field.value,
+            "diabetes": True if selected_diabetes.current == "Есть" else False,
+            "name": "Имя"
+        }
+
+        dialog = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=10),
+            actions=[ft.TextButton("Закрыть", on_click=lambda e: page.close(dialog))],
+        )
+        if data_validity(data["height"], data["weight"], data["age"]):
+            dialog.title = ft.Text("Успех!")
+            dialog.content = ft.Text("Успешная регистрация!")
+
+            requests.post(url="http://127.0.0.1:8000/register/", json=data)
+        else:
+            dialog.title = ft.Text("Ошибка!")
+            dialog.content = ft.Text("Неправильный ввод данных!")
+        page.open(dialog)
+
+    def data_validity(height, weight, age) -> bool:
+        try:
+            if height is not None and not (1 <= int(height) <= 300):
+                return False
+            if weight is not None and not (1 <= int(weight) <= 300):
+                return False
+            if age is not None and not (1 <= int(age) <= 150):
+                return False
+        except (TypeError, ValueError):
+            return False
+        return True
 
     male_button = ft.ElevatedButton(
         text="Мужской",
@@ -236,4 +271,4 @@ def main(page: ft.Page):
 
 
 if __name__ == '__main__':
-    ft.app(target=main, view=ft.WEB_BROWSER, port=50)
+    ft.app(target=main)
