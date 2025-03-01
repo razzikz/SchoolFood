@@ -38,7 +38,7 @@ def main(page: ft.Page):
     selected_gender.current = "Мужской"
 
     selected_diabetes = ft.Ref[str]()
-    selected_diabetes.current = "нет"
+    selected_diabetes.current = "Нет"
 
     def update_gender_style(gender):
         male_button.style = ft.ButtonStyle(
@@ -57,14 +57,14 @@ def main(page: ft.Page):
 
     def update_diabetes_style(diabetes):
         diabetes_yes_button.style = ft.ButtonStyle(
-            bgcolor=dark_green if diabetes == "есть" else white,
-            color=white if diabetes == "есть" else dark_green,
+            bgcolor=dark_green if diabetes == "Есть" else white,
+            color=white if diabetes == "Есть" else dark_green,
             side=ft.BorderSide(width=2, color=dark_green),
             shape=ft.RoundedRectangleBorder(radius=10),
         )
         diabetes_no_button.style = ft.ButtonStyle(
-            bgcolor=dark_green if diabetes == "нет" else white,
-            color=white if diabetes == "нет" else dark_green,
+            bgcolor=dark_green if diabetes == "Нет" else white,
+            color=white if diabetes == "Нет" else dark_green,
             side=ft.BorderSide(width=2, color=dark_green),
             shape=ft.RoundedRectangleBorder(radius=10),
         )
