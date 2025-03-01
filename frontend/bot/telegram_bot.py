@@ -16,7 +16,7 @@ async def send_welcome(message: types.Message):
             [
                 types.InlineKeyboardButton(
                     text="Открыть приложение",
-                    web_app=types.WebAppInfo(url="https://d911-176-222-55-194.ngrok-free.app")
+                    web_app=types.WebAppInfo(url="url")
                 )
             ]
         ]
