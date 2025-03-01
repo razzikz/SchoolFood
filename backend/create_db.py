@@ -34,10 +34,9 @@ connection.close()
 
 
 def add_food():
-    conn = 0
+    conn = sqlite3.connect("database/food.db")
+    curr = conn.cursor()
     for _, row in data.iterrows():
-        conn = sqlite3.connect("database/food.db")
-        curr = conn.cursor()
 
         curr.execute(
             """
@@ -49,6 +48,7 @@ def add_food():
 
     conn.commit()
     conn.close()
+add_food()
 
 
 connection = sqlite3.connect("database/users.db")
