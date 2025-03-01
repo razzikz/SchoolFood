@@ -86,4 +86,16 @@ async def add_product(data: AddProduct) -> JSONResponse:
 
 @app.get("/basket/{user_id}")
 async def get_basket(user_id: str) -> JSONResponse:
-    get_basket_from_user(user_id)
+    basket = get_basket_from_user(user_id)
+
+    if basket is not None:
+        basket = json.loads(basket)
+
+        return JSONResponse({
+            "basket": basket
+        })
+
+    else:
+        return JSONResponse({
+            "get": "Error"
+        })

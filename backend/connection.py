@@ -124,13 +124,33 @@ def add_food_to_basket(user_id: str, product_id: int) -> bool:
         connection.close()
 
 
-def get_basket_from_user(user_id: str):
+def get_basket_from_user(user_id: str) -> Union[json, None]:
     connection = sqlite3.connect("database/basket.db")
     cur = connection.cursor()
 
-    print(cur.execute(
-        """
-        SELECT product_id FROM basket WHERE user_id = ?
-        """,
-        (user_id, )
-    ).fetchall())
+    try:
+        basket = cur.execute(
+            """
+            SELECT product_id, count FROM basket WHERE user_id = ?
+            """,
+            (user_id, )
+        ).fetchall()
+
+        data = [
+            {
+                "product_id": item[0],
+                "count": item[1]
+            }
+
+            for item in basket
+        ]
+
+        data = json.dumps(data, ensure_ascii=False, indent=4)
+
+        return data
+
+    except sqlite3.Error:
+        return None
+
+    finally:
+        connection.close()
