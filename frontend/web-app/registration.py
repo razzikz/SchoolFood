@@ -105,10 +105,20 @@ def main(page: ft.Page):
             actions=[ft.TextButton("Закрыть", on_click=lambda e: page.close(dialog))],
         )
         if data_validity(data["height"], data["weight"], data["age"]):
-            dialog.title = ft.Text("Успех!")
-            dialog.content = ft.Text("Успешная регистрация!")
+            try:
+                response = requests.post(url="http://127.0.0.1:8000/register/", json=data)
 
-            requests.post(url="http://127.0.0.1:8000/register/", json=data)
+                if response.status_code == 200:
+                    dialog.title = ft.Text("Успех!")
+                    dialog.content = ft.Text("Успешная регистрация!")
+                else:
+                    dialog.title = ft.Text("Ошибка!")
+                    dialog.content = ft.Text("Неправильный ввод данных!")
+
+            except requests.exceptions.RequestException as e:
+                dialog.title = ft.Text("Ошибка!")
+                dialog.content = ft.Text("Неправильный ввод данных!")
+
         else:
             dialog.title = ft.Text("Ошибка!")
             dialog.content = ft.Text("Неправильный ввод данных!")
