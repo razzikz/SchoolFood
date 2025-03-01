@@ -10,3 +10,8 @@ class Registration(BaseModel):
     age: int
     diabetes: bool
     name: str
+
+
+class AddProduct(BaseModel):
+    user_id: str
+    product_id: int
