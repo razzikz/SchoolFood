@@ -104,24 +104,20 @@ def main(page: ft.Page):
             shape=ft.RoundedRectangleBorder(radius=10),
             actions=[ft.TextButton("Закрыть", on_click=lambda e: page.close(dialog))],
         )
+
+        success = False
         if data_validity(data["height"], data["weight"], data["age"]):
             try:
                 response = requests.post(url="http://127.0.0.1:8000/register/", json=data)
-
                 if response.status_code == 200:
-                    dialog.title = ft.Text("Успех!")
-                    dialog.content = ft.Text("Успешная регистрация!")
-                else:
-                    dialog.title = ft.Text("Ошибка!")
-                    dialog.content = ft.Text("Неправильный ввод данных!")
+                    success = True
 
             except requests.exceptions.RequestException as e:
-                dialog.title = ft.Text("Ошибка!")
-                dialog.content = ft.Text("Неправильный ввод данных!")
+                ...
 
-        else:
-            dialog.title = ft.Text("Ошибка!")
-            dialog.content = ft.Text("Неправильный ввод данных!")
+        dialog.title = ft.Text("Успех!") if success else ft.Text("Ошибка!")
+        dialog.content = ft.Text("Успешная регистрация!") if success else ft.Text("Неправильный ввод данных!")
+
         page.open(dialog)
 
     def data_validity(height, weight, age) -> bool:
