@@ -88,8 +88,10 @@ def main(page: ft.Page):
         update_diabetes_style("Нет")
 
     def register_clicked(e):
+        user_id = str(page.query.page.route)[10:]
+
         data = {
-            "tg_id": "1234567890",
+            "tg_id": user_id,
             "sex": selected_gender.current,
             "height": height_field.value,
             "weight": weight_field.value,
