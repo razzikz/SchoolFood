@@ -10,8 +10,21 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 @dp.message(Command("start"))
-async def command_start(message: types.Message):
-    await message.answer("start")
+async def send_welcome(message: types.Message):
+    keyboard = types.InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                types.InlineKeyboardButton(
+                    text="Открыть приложение",
+                    web_app=types.WebAppInfo(url="https://d911-176-222-55-194.ngrok-free.app")
+                )
+            ]
+        ]
+    )
+    await message.reply(
+        "start",
+        reply_markup=keyboard
+    )
 
 @dp.message(Command("help"))
 async def command_help(message: types.Message):
