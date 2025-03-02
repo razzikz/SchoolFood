@@ -1,11 +1,14 @@
 import flet as ft
 import requests
 import urllib.parse
+import json
 
 dark_green = "#2B7834"
 orange = "#EC7A2E"
 light_green = "#EAF1CB"
 white = "#FFFFFF"
+
+url_catalog = "https://d127-2001-41d0-700-80cc-00.ngrok-free.app"
 
 
 def main(page: ft.Page):
@@ -14,6 +17,12 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.START
     page.bgcolor = light_green
     page.theme = ft.Theme(font_family="Inter")
+
+    user_data = urllib.parse.unquote(page.query.page.route)
+    parsed_url = urllib.parse.parse_qs(user_data.lstrip("/?"))
+
+    user_id = parsed_url.get("user_id", ["unknown"])[0]
+    user_name = parsed_url.get("name", ["unknown"])[0]
 
     registration_text = ft.Text(
         value="Регистрация",
@@ -89,12 +98,6 @@ def main(page: ft.Page):
         update_diabetes_style("Нет")
 
     def register_clicked(e):
-        user_data = urllib.parse.unquote(page.query.page.route)
-        parsed_url = urllib.parse.parse_qs(user_data.lstrip("/?"))
-
-        user_id = parsed_url.get("user_id", ["unknown"])[0]
-        user_name = parsed_url.get("name", ["unknown"])[0]
-
         data = {
             "tg_id": user_id,
             "sex": selected_gender.current,
@@ -117,8 +120,7 @@ def main(page: ft.Page):
                 if response.status_code == 200:
                     success = True
 
-                    page.window.close()
-                    page.launch_url("http://91aa-2001-41d0-203-e06c-00.ngrok-free.app")
+                    page.launch_url(url_catalog)
 
             except requests.exceptions.RequestException as e:
                 ...
@@ -287,4 +289,5 @@ def main(page: ft.Page):
 
 
 if __name__ == '__main__':
+    # ft.app(target=main)
     ft.app(target=main, view=ft.WEB_BROWSER, port=50)
