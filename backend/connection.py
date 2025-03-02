@@ -204,3 +204,24 @@ def user_data(user_id: str) -> Union[json, None]:
 
     finally:
         connection.close()
+
+
+def information_user(user_id: str):
+    connection = sqlite3.connect("database/users.db")
+    cur = connection.cursor()
+
+    try:
+        food = cur.execute(
+            """
+            SELECT * FROM users WHERE tg_id = ?
+            """,
+            (user_id,)
+        ).fetchone()
+
+        return food
+
+    except sqlite3.Error:
+        return None
+
+    finally:
+        connection.close()
