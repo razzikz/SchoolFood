@@ -78,7 +78,7 @@ def main(page: ft.Page):
         modal=True,
         open=False,
         title=ft.Text("Информация о продукте"),
-        content=ft.Text("Здесь будет информация о продукте"),
+        content=ft.Text("Здесь будет информация о продукте"), # Initial placeholder text
         actions=[
             ft.TextButton("Закрыть", on_click=lambda e: close_dlg(e, page))
         ],
@@ -98,6 +98,13 @@ def main(page: ft.Page):
 
     def open_dlg(e, page, id_):
         nonlocal background_container
+        info = requests.get(url=f"http://127.0.0.1:8000/product_info/{id_+1}").json()
+        dialog.content = ft.Text(f"Название: {info["dish_name"]}\n"
+                                 f"Вес: {info["weight"]}\n"
+                                 f"Белки: {info["protein"]}\n"
+                                 f"Жиры: {info["fat"]}\n"
+                                 f"Углеводы: {info["carbohydrates"]}\n"
+                                 f"Калорийность: {info["kbzu"]}\n") # Update dialog content
         dialog.open = True
         background_container = ft.Container(
             bgcolor=ft.colors.BLACK54,
