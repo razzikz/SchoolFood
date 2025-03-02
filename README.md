@@ -1,5 +1,7 @@
 # SchoolFood
 
+## Ссылка на демонстрацию (RUTUBE): <a href="https://rutube.ru/video/private/0e6d1f433204133ffc77c5e44c93e037/?p=74PUk0T3Kyxj1gLYaG3UVA">https://rutube.ru/video/private/0e6d1f433204133ffc77c5e44c93e037/?p=74PUk0T3Kyxj1gLYaG3UVA</a>
+
 ### 1. Создайте файл `.env`
 ### 2. Вставьте свой Telegram API токен в `.env`
 ```bash
