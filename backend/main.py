@@ -124,3 +124,25 @@ async def check(user_id: str) -> JSONResponse:
     return JSONResponse({
         "login": False
     })
+
+
+@app.get("/user_info/{user_id}")
+async def user_info(user_id: str) -> JSONResponse:
+
+    data = information_user(user_id=user_id)
+
+    if data is not None:
+        return JSONResponse({
+            "tg_id": data[0],
+            "sex": data[1],
+            "height": data[3],
+            "weight": data[4],
+            "age": data[5],
+            "diabetes": data[6],
+            "name": data[2]
+        })
+
+    else:
+        return JSONResponse({
+            "info": "Error"
+        })
