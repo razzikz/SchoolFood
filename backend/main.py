@@ -111,6 +111,7 @@ async def check(user_id: str) -> JSONResponse:
 
         if data:
             return JSONResponse({
+                "login": True,
                 "tg_id": data[0],
                 "sex": data[1],
                 "height": data[3],
