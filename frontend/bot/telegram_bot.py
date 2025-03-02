@@ -8,7 +8,7 @@ dotenv.load_dotenv()
 TOKEN = os.getenv("TOKEN")
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
-url = "url"
+url_reg = "url"
 
 
 @dp.message(Command("start"))
@@ -18,7 +18,7 @@ async def send_welcome(message: types.Message):
             [
                 types.InlineKeyboardButton(
                     text="Открыть приложение",
-                    web_app=types.WebAppInfo(url=f"{url}?user_id={message.from_user.id}&name={message.from_user.first_name}")
+                    web_app=types.WebAppInfo(url=f"{url_reg}?user_id={message.from_user.id}&name={message.from_user.first_name}")
                 )
             ]
         ]

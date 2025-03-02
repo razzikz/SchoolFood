@@ -115,7 +115,10 @@ def main(page: ft.Page):
             try:
                 response = requests.post(url="http://127.0.0.1:8000/register/", json=data)
                 if response.status_code == 200:
-                   success = True
+                    success = True
+
+                    page.window.close()
+                    page.launch_url("http://91aa-2001-41d0-203-e06c-00.ngrok-free.app")
 
             except requests.exceptions.RequestException as e:
                 ...
