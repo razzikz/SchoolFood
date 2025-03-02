@@ -4,15 +4,41 @@ import json
 from typing import Union
 
 
+def check_registration(tg_id: str) -> Union[bool, None]:
+    connection = sqlite3.connect("database/users.db")
+    cur = connection.cursor()
+
+    try:
+        answer = cur.execute(
+            """
+            SELECT tg_id FROM users WHERE tg_id=?
+            """,
+            (tg_id, )
+        ).fetchone()
+
+        if answer is not None:
+            return True
+        else:
+            return False
+
+    except sqlite3.Error:
+
+        return None
+
+    finally:
+        connection.close()
+
+
 def add_user(tg_id: str, sex: str, age: int, diabetes: bool, name: str, height: Union[int, float] = int,
              weight: Union[int, float] = int) -> bool:
+
     connection = sqlite3.connect("database/users.db")
     cur = connection.cursor()
 
     try:
         cur.execute(
             """
-            INSERT OR IGNORE INTO users (tg_id, sex, height, weight, age, diabetes, name)
+            INSERT INTO users (tg_id, sex, height, weight, age, diabetes, name)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (tg_id, sex, height, weight, age, diabetes, name)
@@ -150,6 +176,30 @@ def get_basket_from_user(user_id: str) -> Union[json, None]:
         return data
 
     except sqlite3.Error:
+        return None
+
+    finally:
+        connection.close()
+
+
+def user_data(user_id: str) -> Union[json, None]:
+    connection = sqlite3.connect("database/users.db")
+    cur = connection.cursor()
+
+    try:
+        data = cur.execute(
+            """
+            SELECT * FROM users WHERE tg_id=?
+            """,
+            (user_id,)
+        ).fetchone()
+
+        return data
+
+    except sqlite3.Error as e:
+
+        print(e)
+
         return None
 
     finally:
