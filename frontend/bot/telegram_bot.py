@@ -2,6 +2,7 @@ import dotenv
 import asyncio
 import os
 from aiogram import Bot, Dispatcher, types
+from aiogram.enums import ParseMode
 from aiogram.filters.command import Command
 import requests
 import json
@@ -34,22 +35,17 @@ async def send_welcome(message: types.Message):
         inline_keyboard=[
             [
                 types.InlineKeyboardButton(
-                    text="Открыть приложение",
+                    text="Открыть приложение📱",
                     web_app=types.WebAppInfo(url=url)
                 )
             ]
         ]
     )
-    await message.reply(
-        f"start",
-        reply_markup=keyboard
+    await message.answer(
+        "<b>Привет! 👋 Это бот для веб-приложения школьная еда!\nЗапусти приложение, чтобы начать работу 👇</b>",
+        reply_markup=keyboard,
+        parse_mode=ParseMode.HTML
     )
-
-
-@dp.message(Command("help"))
-async def command_help(message: types.Message):
-    await message.answer("help")
-
 
 async def main():
     await dp.start_polling(bot)
