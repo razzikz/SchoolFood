@@ -74,30 +74,74 @@ def main(page: ft.Page):
         alignment=ft.alignment.center
     )
 
+    dialog = ft.AlertDialog(
+        modal=True,
+        open=False,
+        title=ft.Text("Информация о продукте"),
+        content=ft.Text("Здесь будет информация о продукте"),
+        actions=[
+            ft.TextButton("Закрыть", on_click=lambda e: close_dlg(e, page))
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+    page.overlay.append(dialog)
+
+    background_container = None
+
+    def close_dlg(e, page):
+        nonlocal background_container
+        dialog.open = False
+        if background_container in page.overlay:
+            page.overlay.remove(background_container)
+        background_container = None
+        page.update()
+
+    def open_dlg(e, page, id_):
+        nonlocal background_container
+        dialog.open = True
+        background_container = ft.Container(
+            bgcolor=ft.colors.BLACK54,
+            width=page.width,
+            height=page.height,
+        )
+        page.overlay.append(background_container)
+        page.update()
+        dialog.update()
+
+
     out = requests.get(url="http://127.0.0.1:8000/all_products/").json()
-    def create_product_card(arr):
-        return ft.Container(
-            width=160,
-            height=180,
-            bgcolor=white,
-            border_radius=10,
-            padding=ft.padding.all(15),
-            content=ft.Column(
-                alignment=ft.MainAxisAlignment.START,
-                horizontal_alignment=ft.CrossAxisAlignment.START,
-                controls=[
-                    ft.Text(arr, color=darker_green, size=12),
-                    ft.Container(height=10),
-                ]
-            )
+    def create_product_card(arr, id_):
+        return ft.TextButton(
+            on_click=lambda e: open_dlg(e, page, id_),
+            style=ft.ButtonStyle(
+                padding=ft.padding.all(0),
+                bgcolor=white,
+                shape=ft.RoundedRectangleBorder(radius=10),
+            ),
+            content=ft.Container(
+                width=160,
+                height=180,
+                bgcolor=None,
+                border_radius=10,
+                padding=ft.padding.all(15),
+                content=ft.Column(
+                    alignment=ft.MainAxisAlignment.START,
+                    horizontal_alignment=ft.CrossAxisAlignment.START,
+                    controls=[
+                        ft.Text(arr, color=darker_green, size=12),
+                        ft.Container(height=10),
+                    ]
+                ),
+            ),
+            data=id_
         )
 
     product_rows_list = []
     products = out["products"]
     for i in range(0, len(products), 2):
-        row_controls = [create_product_card( products[i]["name"])]
+        row_controls = [create_product_card(products[i]["name"], i)]
         if i + 1 < len(products):
-            row_controls.append(create_product_card( products[i+1]["name"]))
+            row_controls.append(create_product_card(products[i+1]["name"], i+1))
 
         product_rows_list.append(ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_AROUND,
@@ -142,6 +186,7 @@ def main(page: ft.Page):
         ),
     )
 
+    page.dialog = dialog
     page.add(
         ft.Column(
             controls=[
