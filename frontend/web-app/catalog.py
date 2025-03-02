@@ -6,38 +6,49 @@ def main(page: ft.Page):
     global product_rows_list
     page.title = "Школьная еда | каталог"
     page.bgcolor = "#F0F8E0"
+    page.padding = 0
 
     green = "#4CAF50"
     darker_green = "#388E3C"
     white = "#FFFFFF"
 
-    search_bar = ft.Container(
-        bgcolor=green,
-        border_radius=30,
-        padding=ft.padding.only(left=20, right=10),
+    search_bar_content = ft.Container(
+        height=40,
         content=ft.Row(
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            alignment=ft.MainAxisAlignment.CENTER,
             controls=[
                 ft.TextField(
                     hint_text="Поиск...",
-                    color=white,
-                    border=ft.InputBorder.NONE,
-                    label_style=ft.TextStyle(color=white),
+                    content_padding=ft.padding.all(5),
+                    color="#594747",
+                    border_color="transparent",
+                    border_radius=20,
+                    label_style=ft.TextStyle(color="#594747"),
                     hint_style=ft.TextStyle(
-                        color="#594747",
+                        color="#8D8D8D",
                         weight=ft.FontWeight.BOLD
                     ),
+                    expand=True,
+                    border=ft.InputBorder.OUTLINE,
                 ),
                 ft.IconButton(
                     icon=ft.icons.SEARCH,
                     icon_color="#594747",
                     icon_size=20,
-                    style=ft.ButtonStyle(
-                        padding=ft.padding.all(0)
-                    )
                 ),
             ]
         ),
+        bgcolor="#F3DEC9",
+        border=ft.border.all(1, "#594747"),
+        border_radius=20,
+        padding=ft.padding.all(5),
+        expand=False,
+    )
+
+    search_bar = ft.Container(
+        content=search_bar_content,
+        padding=ft.padding.only(left=20, right=20, top=20),
+        expand=False,
     )
 
     tabs_row = ft.Row(
@@ -51,7 +62,8 @@ def main(page: ft.Page):
                 content=ft.Text("Продукты", color="#8D8D8D"),
                 style=ft.ButtonStyle(padding=ft.padding.all(10))
             ),
-        ]
+        ],
+        expand=False,
     )
 
     active_tab_indicator = ft.Container(
@@ -63,7 +75,7 @@ def main(page: ft.Page):
     )
 
     out = requests.get(url="http://127.0.0.1:8000/all_products/").json()
-    def create_product_card(recommendation_text, recommendation_color, arr):
+    def create_product_card(arr):
         return ft.Container(
             width=160,
             height=180,
@@ -76,12 +88,6 @@ def main(page: ft.Page):
                 controls=[
                     ft.Text(arr, color=darker_green, size=12),
                     ft.Container(height=10),
-                    ft.Text(
-                        recommendation_text,
-                        color=recommendation_color,
-                        weight=ft.FontWeight.BOLD,
-                        size=14
-                    ),
                 ]
             )
         )
@@ -89,66 +95,67 @@ def main(page: ft.Page):
     product_rows_list = []
     products = out["products"]
     for i in range(0, len(products), 2):
-        row_controls = [create_product_card("Рекомендовано", green, products[i]["name"])]
+        row_controls = [create_product_card( products[i]["name"])]
         if i + 1 < len(products):
-            row_controls.append(create_product_card("Рекомендовано", green, products[i+1]["name"]))
+            row_controls.append(create_product_card( products[i+1]["name"]))
 
         product_rows_list.append(ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_AROUND,
-            controls=row_controls
+            controls=row_controls,
+            expand=True,
         ))
 
     products_list_view = ft.ListView(
         controls=product_rows_list,
-        height= 180 * 3 + 20 * 2,
-        width=400,
         spacing=20,
-        padding=ft.padding.symmetric(horizontal=10)
+        padding=ft.padding.symmetric(horizontal=10),
+        expand=True,
     )
 
 
     bottom_nav_bar = ft.Container(
         bgcolor=green,
-        height=60,
+        height=50,
         content=ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_AROUND,
             controls=[
                 ft.IconButton(
                     icon=ft.icons.GRID_VIEW,
                     icon_color=white,
-                    icon_size=30,
+                    icon_size=25,
                     style=ft.ButtonStyle(padding=ft.padding.all(0))
                 ),
                 ft.IconButton(
                     icon=ft.icons.HOME_OUTLINED,
                     icon_color=white,
-                    icon_size=30,
+                    icon_size=25,
                     style=ft.ButtonStyle(padding=ft.padding.all(0))
                 ),
                 ft.IconButton(
                     icon=ft.icons.PERSON_OUTLINE,
                     icon_color=white,
-                    icon_size=30,
+                    icon_size=25,
                     style=ft.ButtonStyle(padding=ft.padding.all(0))
                 ),
-            ]
-        )
+            ],
+            expand=True,
+        ),
     )
 
     page.add(
         ft.Column(
             controls=[
                 search_bar,
-                ft.Container(height=20),
+                ft.Container(height=10),
                 tabs_row,
                 active_tab_indicator,
-                ft.Container(height=20),
+                ft.Container(height=10),
                 products_list_view,
-                ft.Container(),
                 bottom_nav_bar,
             ],
-            width=400,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=0,
         )
     )
 
