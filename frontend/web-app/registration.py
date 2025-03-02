@@ -1,5 +1,6 @@
 import flet as ft
 import requests
+import urllib.parse
 
 dark_green = "#2B7834"
 orange = "#EC7A2E"
@@ -88,7 +89,11 @@ def main(page: ft.Page):
         update_diabetes_style("Нет")
 
     def register_clicked(e):
-        user_id = str(page.query.page.route)[10:]
+        user_data = urllib.parse.unquote(page.query.page.route)
+        parsed_url = urllib.parse.parse_qs(user_data.lstrip("/?"))
+
+        user_id = parsed_url.get("user_id", ["unknown"])[0]
+        user_name = parsed_url.get("name", ["unknown"])[0]
 
         data = {
             "tg_id": user_id,
@@ -97,7 +102,7 @@ def main(page: ft.Page):
             "weight": weight_field.value,
             "age": age_field.value,
             "diabetes": True if selected_diabetes.current == "Есть" else False,
-            "name": "Имя"
+            "name": user_name
         }
 
         dialog = ft.AlertDialog(
@@ -110,7 +115,7 @@ def main(page: ft.Page):
             try:
                 response = requests.post(url="http://127.0.0.1:8000/register/", json=data)
                 if response.status_code == 200:
-                    success = True
+                   success = True
 
             except requests.exceptions.RequestException as e:
                 ...
@@ -122,11 +127,11 @@ def main(page: ft.Page):
 
     def data_validity(height, weight, age) -> bool:
         try:
-            if height is not None and not (1 <= int(height) <= 300):
+            if (height is None) or (not (1 <= int(height) <= 300)):
                 return False
-            if weight is not None and not (1 <= int(weight) <= 300):
+            if (weight is None) or (not (1 <= int(weight) <= 300)):
                 return False
-            if age is not None and not (1 <= int(age) <= 150):
+            if (age is None) or (not (1 <= int(age) <= 150)):
                 return False
         except (TypeError, ValueError):
             return False

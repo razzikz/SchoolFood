@@ -18,7 +18,7 @@ async def send_welcome(message: types.Message):
             [
                 types.InlineKeyboardButton(
                     text="Открыть приложение",
-                    web_app=types.WebAppInfo(url=f"{url}?user_id={message.from_user.id}")
+                    web_app=types.WebAppInfo(url=f"{url}?user_id={message.from_user.id}&name={message.from_user.first_name}")
                 )
             ]
         ]
