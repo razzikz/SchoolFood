@@ -99,3 +99,27 @@ async def get_basket(user_id: str) -> JSONResponse:
         return JSONResponse({
             "get": "Error"
         })
+
+
+@app.get("/check/{user_id}")
+async def check(user_id: str) -> JSONResponse:
+
+    answer = check_registration(tg_id=user_id)
+
+    if answer:
+        data = user_data(user_id=user_id)
+
+        if data:
+            return JSONResponse({
+                "tg_id": data[0],
+                "sex": data[1],
+                "height": data[3],
+                "weight": data[4],
+                "age": data[5],
+                "diabetes": data[6],
+                "name": data[2]
+            })
+
+    return JSONResponse({
+        "login": False
+    })
